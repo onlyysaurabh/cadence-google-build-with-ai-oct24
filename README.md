@@ -6,6 +6,7 @@
 
 *Engineered to translate deliberate practice into visual momentum — without guilt, streaks, or bloat.*
 
+[![Vercel Deployment](https://img.shields.io/badge/Live_Demo-cadence--google--build--with--ai--oct24.vercel.app-000000?style=flat-square&logo=vercel)](https://cadence-google-build-with-ai-oct24.vercel.app)
 [![React](https://img.shields.io/badge/React-19.3-61DAFB?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-6.0-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
@@ -13,7 +14,7 @@
 [![Design System](https://img.shields.io/badge/Design_System-Genesis-6366F1?style=flat-square)](./DESIGN.md)
 [![License](https://img.shields.io/badge/License-MIT-gray?style=flat-square)](LICENSE)
 
-[**Explore Features**](#-key-features) • [**Design System**](#-genesis-design-system) • [**Architecture**](#-architecture--file-structure) • [**Getting Started**](#-getting-started) • [**Keyboard Shortcuts**](#-keyboard-shortcuts)
+[**Live Demo ↗**](https://cadence-google-build-with-ai-oct24.vercel.app) • [**Explore Features**](#-key-features) • [**Design System**](#-genesis-design-system) • [**Architecture**](#-architecture--file-structure) • [**Getting Started**](#-getting-started) • [**Keyboard Shortcuts**](#-keyboard-shortcuts)
 
 ---
 

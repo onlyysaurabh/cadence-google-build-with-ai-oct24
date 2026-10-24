@@ -19,6 +19,18 @@ export interface Hobby {
   logs: SessionLog[];
 }
 
+export interface TimelineEntry {
+  id: string;
+  date: string; // "YYYY-MM-DD"
+  durationMinutes: SessionDuration;
+  note: string;
+  timestamp: number;
+  hobbyId: string;
+  hobbyTitle: string;
+  category: Category;
+  nextStepBookmark: string;
+}
+
 export const INITIAL_HOBBIES: Hobby[] = [
   {
     id: 'hobby-rust',

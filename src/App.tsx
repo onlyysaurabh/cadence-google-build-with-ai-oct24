@@ -11,6 +11,7 @@ import {
   formatLocalDate,
 } from './utils.ts';
 import { HobbyCard } from './components/HobbyCard.tsx';
+import { TimelineView } from './components/TimelineView.tsx';
 import { LogModal } from './components/LogModal.tsx';
 import { NewHobbyModal } from './components/NewHobbyModal.tsx';
 import { CommandPalette } from './components/CommandPalette.tsx';
@@ -22,6 +23,11 @@ const CATEGORIES: Category[] = ['Creative', 'Tech', 'Physical', 'Learning'];
 export default function App() {
   const [hobbies, setHobbies] = useState<Hobby[]>(() => loadHobbies(INITIAL_HOBBIES));
   const [selectedCategory, setSelectedCategory] = useState<'All' | Category>('All');
+  const [currentView, setCurrentView] = useState<'dashboard' | 'timeline'>(() => {
+    return typeof window !== 'undefined' && window.location.hash === '#timeline'
+      ? 'timeline'
+      : 'dashboard';
+  });
   const [windowDates] = useState(() => get28DayWindow());
   const [todayStr] = useState(() => formatLocalDate(new Date()));
 
@@ -34,6 +40,20 @@ export default function App() {
   useEffect(() => {
     saveHobbies(hobbies);
   }, [hobbies]);
+
+  // Synchronize navigation view with window.location.hash
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash === '#timeline') {
+        setCurrentView('timeline');
+      } else {
+        setCurrentView('dashboard');
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // Lock body scroll whenever any dialog or command palette is open
   useEffect(() => {
@@ -122,7 +142,14 @@ export default function App() {
         <div className="max-w-[1280px] h-full mx-auto px-6 flex items-center justify-between">
           {/* Left: Wordmark & Brand Accent */}
           <div className="flex items-center space-x-2.5">
-            <a href="#dashboard" className="flex items-center space-x-2 group">
+            <a
+              href="#dashboard"
+              onClick={() => {
+                window.location.hash = '#dashboard';
+                setCurrentView('dashboard');
+              }}
+              className="flex items-center space-x-2 group"
+            >
               <div className="w-6 h-6 rounded-md bg-[#0A0A0A] text-white flex items-center justify-center font-display font-bold text-xs tracking-tight transition-transform duration-200 group-hover:scale-105">
                 C
               </div>
@@ -159,13 +186,29 @@ export default function App() {
             <nav className="flex items-center space-x-5 text-[14px] font-normal text-text-secondary">
               <a
                 href="#dashboard"
-                className="text-text-primary font-bold border-b-2 border-text-primary py-3.5 -mb-[1px]"
+                onClick={() => {
+                  window.location.hash = '#dashboard';
+                  setCurrentView('dashboard');
+                }}
+                className={
+                  currentView === 'dashboard'
+                    ? 'text-text-primary font-bold border-b-2 border-text-primary py-3.5 -mb-[1px]'
+                    : 'hover:text-text-primary transition-colors py-3.5 font-normal text-text-secondary'
+                }
               >
                 Dashboard
               </a>
               <a
                 href="#timeline"
-                className="hover:text-text-primary transition-colors py-3.5 font-normal"
+                onClick={() => {
+                  window.location.hash = '#timeline';
+                  setCurrentView('timeline');
+                }}
+                className={
+                  currentView === 'timeline'
+                    ? 'text-text-primary font-bold border-b-2 border-text-primary py-3.5 -mb-[1px]'
+                    : 'hover:text-text-primary transition-colors py-3.5 font-normal text-text-secondary'
+                }
               >
                 Timeline
               </a>
@@ -206,16 +249,18 @@ export default function App() {
 
       {/* Main Viewport Container */}
       <main className="max-w-[1280px] w-full mx-auto px-6 py-10 flex-1">
-        {/* 2. Header Summary & Filter Bar */}
+        {/* 2. Header Summary & Action Bar */}
         <section className="mb-8">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-border">
             {/* Left: Heading & Dynamic Subtitle */}
             <div>
               <h1 className="font-display font-bold text-[32px] text-text-primary tracking-[-0.035em] leading-tight">
-                Active Pursuits
+                {currentView === 'dashboard' ? 'Active Pursuits' : 'Practice Timeline'}
               </h1>
               <p className="text-[15px] text-text-secondary mt-1 font-normal">
-                {totalWeeklyCompleted} of {totalWeeklyTarget} weekly sessions completed across {hobbies.length} hobbies
+                {currentView === 'dashboard'
+                  ? `${totalWeeklyCompleted} of ${totalWeeklyTarget} weekly sessions completed across ${hobbies.length} hobbies`
+                  : `Chronological activity stream of deliberate practice sessions across ${hobbies.length} hobbies`}
               </p>
             </div>
 
@@ -232,78 +277,88 @@ export default function App() {
             </div>
           </div>
 
-          {/* Filter Chips & Target Progress Row */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-5">
-            <div className="flex items-center flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={() => setSelectedCategory('All')}
-                className={`px-3 py-1 rounded-full text-[12px] transition-all duration-150 cursor-pointer ${
-                  selectedCategory === 'All'
-                    ? 'bg-primary text-white font-bold shadow-[0_2px_8px_rgba(99,102,241,0.22)]'
-                    : 'bg-[#F3F4F6] text-text-secondary hover:bg-[#E5E7EB] hover:text-text-primary font-normal'
-                }`}
-              >
-                All Hobbies ({hobbies.length})
-              </button>
-              {CATEGORIES.map((cat) => (
+          {/* Filter Chips & Target Progress Row for Dashboard */}
+          {currentView === 'dashboard' && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-5">
+              <div className="flex items-center flex-wrap gap-2">
                 <button
-                  key={cat}
                   type="button"
-                  onClick={() => setSelectedCategory(cat)}
+                  onClick={() => setSelectedCategory('All')}
                   className={`px-3 py-1 rounded-full text-[12px] transition-all duration-150 cursor-pointer ${
-                    selectedCategory === cat
+                    selectedCategory === 'All'
                       ? 'bg-primary text-white font-bold shadow-[0_2px_8px_rgba(99,102,241,0.22)]'
                       : 'bg-[#F3F4F6] text-text-secondary hover:bg-[#E5E7EB] hover:text-text-primary font-normal'
                   }`}
                 >
-                  {cat}
+                  All Hobbies ({hobbies.length})
                 </button>
-              ))}
-            </div>
-
-            {/* Weekly Target Progress Pill */}
-            <div className="flex items-center space-x-2 text-[12px] text-text-secondary font-normal group cursor-default">
-              <span>Weekly Target:</span>
-              <div className="w-24 h-2 bg-border rounded-full overflow-hidden p-0.5">
-                <div
-                  className="h-full bg-success rounded-full transition-all duration-500 ease-out"
-                  style={{ width: `${Math.min(100, overallWeeklyPercent)}%` }}
-                />
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-3 py-1 rounded-full text-[12px] transition-all duration-150 cursor-pointer ${
+                      selectedCategory === cat
+                        ? 'bg-primary text-white font-bold shadow-[0_2px_8px_rgba(99,102,241,0.22)]'
+                        : 'bg-[#F3F4F6] text-text-secondary hover:bg-[#E5E7EB] hover:text-text-primary font-normal'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
               </div>
-              <span className="font-mono text-text-primary font-normal">
-                {overallWeeklyPercent}%
-              </span>
+
+              {/* Weekly Target Progress Pill */}
+              <div className="flex items-center space-x-2 text-[12px] text-text-secondary font-normal group cursor-default">
+                <span>Weekly Target:</span>
+                <div className="w-24 h-2 bg-border rounded-full overflow-hidden p-0.5">
+                  <div
+                    className="h-full bg-success rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${Math.min(100, overallWeeklyPercent)}%` }}
+                  />
+                </div>
+                <span className="font-mono text-text-primary font-normal">
+                  {overallWeeklyPercent}%
+                </span>
+              </div>
             </div>
-          </div>
+          )}
         </section>
 
-        {/* 3. Hobby Card Grid (3-Column Grid, 24px Gap) */}
-        {filteredHobbies.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredHobbies.map((hobby) => (
-              <HobbyCard
-                key={hobby.id}
-                hobby={hobby}
-                windowDates={windowDates}
-                todayStr={todayStr}
-                onLogClick={(h) => setActiveLogHobby(h)}
-              />
-            ))}
-          </div>
+        {/* 3. View Switcher: Dashboard Card Grid or Practice Timeline */}
+        {currentView === 'dashboard' ? (
+          filteredHobbies.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredHobbies.map((hobby) => (
+                <HobbyCard
+                  key={hobby.id}
+                  hobby={hobby}
+                  windowDates={windowDates}
+                  todayStr={todayStr}
+                  onLogClick={(h) => setActiveLogHobby(h)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="py-16 text-center bg-surface border border-border rounded-xl p-8">
+              <p className="text-text-secondary text-sm font-normal">
+                No pursuits found in "{selectedCategory}".
+              </p>
+              <button
+                type="button"
+                onClick={() => setSelectedCategory('All')}
+                className="mt-3 text-primary text-sm font-normal hover:underline cursor-pointer"
+              >
+                View all pursuits →
+              </button>
+            </div>
+          )
         ) : (
-          <div className="py-16 text-center bg-surface border border-border rounded-xl p-8">
-            <p className="text-text-secondary text-sm font-normal">
-              No pursuits found in "{selectedCategory}".
-            </p>
-            <button
-              type="button"
-              onClick={() => setSelectedCategory('All')}
-              className="mt-3 text-primary text-sm font-normal hover:underline cursor-pointer"
-            >
-              View all pursuits →
-            </button>
-          </div>
+          <TimelineView
+            hobbies={hobbies}
+            todayStr={todayStr}
+            onLogClick={(h) => setActiveLogHobby(h)}
+          />
         )}
 
         {/* 4. Quick Insights Footer Strip */}
@@ -322,7 +377,11 @@ export default function App() {
             </span>
             <button
               type="button"
-              onClick={() => setSelectedCategory('All')}
+              onClick={() => {
+                setSelectedCategory('All');
+                window.location.hash = '#dashboard';
+                setCurrentView('dashboard');
+              }}
               className="text-primary font-normal hover:underline text-[12px] transition-colors hover:text-primary-hover cursor-pointer"
             >
               View All {hobbies.length} Hobbies →

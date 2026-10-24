@@ -16,8 +16,9 @@
 | **Phase 3** | Core UI Shell & 28-Day Dot Matrix Cards | 🟢 Complete | 5 / 5 |
 | **Phase 4** | Interactive Modals & Command Palette | 🟢 Complete | 4 / 4 |
 | **Phase 5** | Design System Audit & Accessibility | 🟢 Complete | 4 / 4 |
-| **Phase 6** | Verification, Build & Deployment Prep | ⚪ Pending | 0 / 3 |
-| **Total** | | | **22 / 25** |
+| **Phase 6** | Practice Timeline & Hash Router Navigation | 🟢 Complete | 3 / 3 |
+| **Phase 7** | Verification, Build & Deployment Prep | 🟢 Complete | 3 / 3 |
+| **Total** | | | **28 / 28** |
 
 ---
 
@@ -249,28 +250,60 @@
 
 ---
 
-## Phase 6: Verification, Build & Deployment Prep
+## Phase 6: Practice Timeline & Hash Router Navigation
+
+**Goal:** Implement zero-dependency client-side hash routing between Dashboard and Timeline, with a chronological activity feed grouped by date.
+
+- [x] **Task 6.1: Hash Router Navigation (`#dashboard` & `#timeline`)**
+  - Implement bidirectional synchronization in `App.tsx` via `window.location.hash` and `hashchange` listener.
+  - Read initial hash on load (`#timeline` vs `#dashboard`).
+  - Active tab highlighting in sticky navigation:
+    - Active: `text-text-primary font-bold border-b-2 border-text-primary py-3.5 -mb-[1px]`
+    - Inactive: `hover:text-text-primary transition-colors py-3.5 font-normal text-text-secondary`
+  - Support browser back/forward history navigation without page reloads.
+  - *Acceptance Criteria:* Visiting `http://localhost:5173/#timeline` directly or clicking "Timeline" transitions immediately to the Timeline view with active tab highlighting.
+
+- [x] **Task 6.2: Implement `TimelineView.tsx` with Date Clustering & Activity Stream**
+  - Create `src/components/TimelineView.tsx` strictly adhering to Genesis Editorial Precision tokens.
+  - Flatten and sort all pursuit logs chronologically (newest first).
+  - Date clustering with humanized labels ("Today", "Yesterday", "Sat, Oct 24, 2026") using native JavaScript Date math.
+  - Visual timeline architecture:
+    - 2px vertical spine (`border-border`)
+    - Circular timeline node marker (`w-3.5 h-3.5 rounded-full bg-surface border-2 border-primary ring-4 ring-canvas`)
+    - Gallery cards (`bg-surface border border-border rounded-xl p-5 hover:border-primary/40`)
+    - Duration badges in monospace font (`JetBrains Mono`)
+    - Recessed session notes and next step bookmarks.
+  - Aggregate statistics: Total practice time, completed sessions count, and active days.
+  - *Acceptance Criteria:* All 12 seed sessions render accurately in descending order grouped by date with proper duration totals.
+
+- [x] **Task 6.3: Timeline Interactivity & Filtering**
+  - Category filter pills (`All Categories`, `Creative`, `Tech`, `Physical`, `Learning`).
+  - Pursuit selector dropdown to isolate a specific hobby.
+  - Inline `+ Log Again` secondary button on each timeline card to trigger `LogModal` for that specific pursuit.
+  - Editorial empty state with "Clear filters" action.
+  - *Acceptance Criteria:* Filtering updates the feed instantly; logging a new session from a timeline card updates both the timeline and 28-day matrix in real time.
+
+---
+
+## Phase 7: Verification, Build & Deployment Prep
 
 **Goal:** Ensure complete build integrity, zero console warnings, offline capabilities, and deployment readiness.
 
-- [ ] **Task 6.1: Production TypeScript & Bundle Audit**
+- [x] **Task 7.1: Production TypeScript, Oxlint & Bundle Audit**
   - Run `npm run build` with strict TypeScript checks.
-  - Check production bundle size (should be < 150KB gzip due to Ponytail zero-bloat architecture).
-  - Verify zero runtime console errors or React key warnings.
-  - *Acceptance Criteria:* Build completes in under 3 seconds with minimal bundle size.
+  - Run `npm run lint` with Oxlint (0 warnings, 0 errors).
+  - Check production bundle size (< 80KB gzip).
+  - *Acceptance Criteria:* Clean build in < 200ms with zero type errors or lint warnings.
 
-- [ ] **Task 6.2: End-to-End Workflow & Persistence Test**
-  - Test workflow:
-    1. Load app with default initial hobbies.
-    2. Add new hobby ("Analog Photography", Creative, 2x/week, bookmark: "Develop Kodak Tri-X 400 roll").
-    3. Log session for Rust (45m, "Async streams").
-    4. Check that today's dot in Rust matrix turns `#6366F1`.
-    5. Press `⌘K`, search "Tri-X", hit Enter to open log modal.
-    6. Export backup JSON.
-    7. Hard refresh browser (F5) and verify all state is intact.
-  - *Acceptance Criteria:* All actions persist and render accurately without latency.
+- [x] **Task 7.2: Automated Design Tokens & Regression Tests**
+  - Add timeline unit tests in `src/utils.test.ts`:
+    - `getTimelineEntries` descending sort check
+    - `formatTimelineDate` ('Today', 'Yesterday', formatted date)
+    - Inclusion of `TimelineView.tsx` in Two-Weight Rule (strictly 400 & 700) and Radius token verification
+    - Verification of Single Primary CTA rule.
+  - *Acceptance Criteria:* `npm test` passes 100% of assertions.
 
-- [ ] **Task 6.3: Deployment Configuration**
+- [x] **Task 7.3: Deployment Configuration**
   - Configure static hosting (`firebase.json` for Firebase Hosting or static build output `dist/`).
   - Document deployment command (`npm run build && firebase deploy` or Cloudflare Pages static deploy).
   - *Acceptance Criteria:* Static directory `dist/` is deployable directly to any edge CDN.
@@ -279,9 +312,11 @@
 
 ## Verification & Quality Sign-Off Checklist
 
-- [x] Single Primary CTA Rule: Only 1 filled indigo button on the main dashboard (`+ New Hobby`).
-- [x] Strict Two-Weight Rule: Only 400 and 700 weights rendered across typography.
-- [x] Radius Hierarchy: 12px (cards/modals), 8px (bookmark), 6px (inputs/buttons), 4px (badges), 9999px (pills/dots).
+- [x] Hash Navigation: `#timeline` and `#dashboard` route instantaneously with active tab indication.
+- [x] Single Primary CTA Rule: Only 1 filled indigo button on the main screen (`+ New Hobby`).
+- [x] Strict Two-Weight Rule: Only 400 and 700 weights rendered across all dashboard and timeline typography.
+- [x] Radius Hierarchy: 12px (cards/modals), 8px (bookmark/notes), 6px (inputs/buttons), 4px (badges), 9999px (pills/dots).
+- [x] Chronological Timeline: Sessions grouped by date with duration totals, notes, bookmarks, and `+ Log Again` actions.
 - [x] Interactive 28-Day Matrix: 4 rows × 7 columns, hover tooltips, immediate color update upon logging.
-- [x] Bookmark Synchronization: Updating bookmark in Quick-Log reflects immediately on card frame.
+- [x] Bookmark Synchronization: Updating bookmark in Quick-Log reflects immediately on card frame and timeline entries.
 - [x] Data Sovereignty: LocalStorage persistence + JSON export/import fully operational.

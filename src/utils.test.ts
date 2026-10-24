@@ -6,6 +6,8 @@ import {
   getStatus,
   loadHobbies,
   importBackup,
+  getTimelineEntries,
+  formatTimelineDate,
 } from './utils.ts';
 import { INITIAL_HOBBIES } from './types.ts';
 import type { SessionLog, Hobby } from './types.ts';
@@ -126,12 +128,31 @@ const createdHobby: Hobby = {
 assert.equal(createdHobby.title, 'Analog Photography');
 assert.equal(createdHobby.logs.length, 0);
 
-// 9. Phase 5 Genesis Design System & Two-Weight Rule Verification
+// 9. Timeline calculations and sorting
+const timelineEntries = getTimelineEntries(INITIAL_HOBBIES);
+assert.equal(timelineEntries.length, 12);
+// Verify sorted descending by date
+for (let i = 0; i < timelineEntries.length - 1; i++) {
+  assert.ok(
+    timelineEntries[i].date >= timelineEntries[i + 1].date,
+    `Timeline entries should be sorted descending by date: ${timelineEntries[i].date} vs ${timelineEntries[i + 1].date}`
+  );
+}
+// Top entry is 2026-10-24
+assert.equal(timelineEntries[0].date, '2026-10-24');
+
+// Date formatting helper
+assert.equal(formatTimelineDate('2026-10-24', '2026-10-24'), 'Today');
+assert.equal(formatTimelineDate('2026-10-23', '2026-10-24'), 'Yesterday');
+assert.equal(formatTimelineDate('2026-10-22', '2026-10-24'), 'Thu, Oct 22, 2026');
+
+// 10. Phase 5 Genesis Design System & Two-Weight Rule Verification
 import fs from 'node:fs';
 
 const UI_FILES = [
   'src/App.tsx',
   'src/components/HobbyCard.tsx',
+  'src/components/TimelineView.tsx',
   'src/components/LogModal.tsx',
   'src/components/NewHobbyModal.tsx',
   'src/components/CommandPalette.tsx',

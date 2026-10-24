@@ -1,5 +1,5 @@
 // ponytail: localStorage client persistence; upgrade to Cloud Firestore if multi-user sync is needed.
-import type { Hobby, SessionLog } from './types.ts';
+import type { Hobby, SessionLog, TimelineEntry } from './types.ts';
 
 export const STORAGE_KEY = 'cadence_hobbies_v1';
 
@@ -96,4 +96,50 @@ export function getStatus(logs: SessionLog[], referenceDate: Date = new Date()):
     return { label: `On Track — ${diffDays}d ago`, isGreen: true };
   }
   return { label: `Needs Attention — ${diffDays}d inactive`, isGreen: false };
+}
+
+export function getTimelineEntries(hobbies: Hobby[]): TimelineEntry[] {
+  const entries: TimelineEntry[] = [];
+  for (const hobby of hobbies) {
+    for (const log of hobby.logs) {
+      entries.push({
+        id: log.id,
+        date: log.date,
+        durationMinutes: log.durationMinutes,
+        note: log.note,
+        timestamp: log.timestamp,
+        hobbyId: hobby.id,
+        hobbyTitle: hobby.title,
+        category: hobby.category,
+        nextStepBookmark: hobby.nextStepBookmark,
+      });
+    }
+  }
+  return entries.sort((a, b) => {
+    if (b.date !== a.date) {
+      return b.date.localeCompare(a.date);
+    }
+    return b.timestamp - a.timestamp;
+  });
+}
+
+export function formatTimelineDate(dateStr: string, todayStr: string = formatLocalDate(new Date())): string {
+  if (dateStr === todayStr) {
+    return 'Today';
+  }
+  const [ty, tm, td] = todayStr.split('-').map(Number);
+  const yesterday = new Date(ty, tm - 1, td - 1);
+  const yesterdayStr = formatLocalDate(yesterday);
+  if (dateStr === yesterdayStr) {
+    return 'Yesterday';
+  }
+
+  const [y, m, d] = dateStr.split('-').map(Number);
+  const dateObj = new Date(y, m - 1, d);
+  return dateObj.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
 }

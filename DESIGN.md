@@ -39,7 +39,8 @@ This design uses minimal shadows. Cards rest flat with a 1px border and gain a s
 - **Lists**: Stacked rows with 1px dividers between items. Each row is flex with space-between, 12px vertical and 16px horizontal padding. Hover: subtle background change.
 - **Checkboxes**: 20px size, rounded-full, gray-200 unchecked, indigo checked with white checkmark. Used as toggle switches for bookmark updates.
 - **Tooltips**: Native browser tooltips via title attributes.
-- **Navigation**: Sticky top nav with backdrop-blur, 56px height, 1px bottom border. Brand left, ⌘K search center, JSON export & user avatar right.
+- **Navigation**: Sticky top nav with backdrop-blur, 56px height, 1px bottom border. Brand left, ⌘K search center, JSON export & user avatar right. Active tabs (`#dashboard`, `#timeline`) use 700 bold weight with a 2px bottom border (`border-b-2 border-[#0A0A0A]`), while inactive tabs use 400 regular weight.
+- **Timeline Feed**: Continuous 2px vertical spine (`#E8E8EC`), circular node bullets (14px diameter, white fill with `#6366F1` border and canvas ring), date cluster headers with relative labels ("Today", "Yesterday", "Sat, Oct 24, 2026") and duration totals. Session entries use 12px radius cards with recessed 8px note containers.
 - **Search**: Global search triggered by ⌘K. Rendered as a rounded-xl bar with magnifying glass icon and keyboard shortcut badge.
 
 ## Spacing

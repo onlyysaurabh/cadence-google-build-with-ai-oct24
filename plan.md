@@ -95,15 +95,17 @@ Maximum **two font weights** (`Regular` 400 and `Bold` 700) across the entire ap
 
 ---
 
-## 5. Lean File Architecture (9 Files Total)
+## 5. Lean File Architecture (10 Files Total)
 
 ```
 src/
-├── types.ts              # Data interfaces (Hobby, SessionLog, Category) + Seed Data
-├── utils.ts              # 28-day matrix math, weekly targets, relative status, storage/export/import
-├── App.tsx               # App shell: TopNav, HeaderSummary, 3-column Grid, ⌘K listener
+├── types.ts              # Data interfaces (Hobby, SessionLog, Category, TimelineEntry) + Seed Data
+├── utils.ts              # 28-day matrix math, weekly targets, timeline sorting, relative status, storage/export/import
+├── utils.test.ts         # Automated smoke tests (metrics, Genesis Two-Weight & radius token enforcement)
+├── App.tsx               # App shell: TopNav (#dashboard / #timeline hash router), Header, Modal listeners
 ├── components/
 │   ├── HobbyCard.tsx     # 200px dot matrix preview + bookmark + secondary log button
+│   ├── TimelineView.tsx  # Chronological practice stream, date clustering, time totals, quick log
 │   ├── LogModal.tsx      # Quick-log modal (duration chips, notes, bookmark update)
 │   ├── NewHobbyModal.tsx # Add new pursuit modal
 │   └── CommandPalette.tsx # Minimal ⌘K quick-jump search dialog
@@ -329,15 +331,31 @@ export function getStatus(logs: SessionLog[]): { label: string; isGreen: boolean
 - Filter input with instant live search across hobbies, categories, and bookmarks.
 - Quick click opens Quick-Log modal directly for the selected pursuit.
 
+### 8.6 Practice Timeline (`src/components/TimelineView.tsx`)
+- Hash-routed via `window.location.hash` (`#timeline` vs `#dashboard`) with full back/forward browser history support.
+- Top navigation reflects current active tab with bottom border highlight.
+- Aggregate header statistics: Total practice hours/minutes, completed session count, and unique active days count.
+- Dynamic filtering by Category (`All`, `Creative`, `Tech`, `Physical`, `Learning`) and Pursuit dropdown selector.
+- Chronological activity stream with continuous vertical timeline spine (`2px` border-border).
+- Date cluster headings with relative dates ("Today", "Yesterday", "Sat, Oct 24, 2026") and session duration summaries.
+- Individual session cards (`bg-surface border border-border rounded-xl p-5 hover:border-primary/40`):
+  - Pursuit title and category pill.
+  - Duration pill in monospace font (`JetBrains Mono`).
+  - Session notes container (`bg-[#FAFAFA] border border-border rounded-lg p-3 text-[14px]`).
+  - Next step bookmark context link.
+  - Secondary action button `+ Log Again` to quickly record new sessions for that specific pursuit.
+- Editorial empty state with quick action to clear active filters.
+
 ---
 
-## 9. 4-Step Execution Roadmap
+## 9. Execution Roadmap
 
 ```mermaid
 flowchart LR
     S1["1. Scaffolding & Tokens\nVite + Tailwind + Fonts"] --> S2["2. State & Storage\nTypes, Seed Data, Utils"]
     S2 --> S3["3. UI & Cards Grid\nTopNav, Filter, Dot Grid Card"]
     S3 --> S4["4. Modals & ⌘K\nQuick-Log, New Hobby, Export"]
+    S4 --> S5["5. Practice Timeline & Hash Routing\n#timeline View, Activity Feed, Tests"]
 ```
 
 ### Step 1: Scaffolding & Design Tokens (15 mins)
@@ -356,15 +374,21 @@ flowchart LR
 ### Step 4: Modals, Command Palette & Build (20 mins)
 - Implement `LogModal.tsx`, `NewHobbyModal.tsx`, and `CommandPalette.tsx`.
 - Connect JSON Export/Import.
-- Run `npm run build` to verify production bundle. Deploy to Firebase Hosting static edge.
+
+### Step 5: Practice Timeline & Hash Router (15 mins)
+- Implement `#timeline` / `#dashboard` synchronization via `window.location.hash` and `hashchange` listeners.
+- Implement `TimelineView.tsx` with date clustering, chronological activity feed, duration metrics, and inline quick-logging.
+- Add automated regression tests verifying timeline calculations, Genesis Two-Weight rule, and radius token hierarchies.
+- Run `npm run build` and `npm test` to verify production bundle. Deploy to static edge.
 
 ---
 
 ## 10. Verification & Quality Checklist
 
-- [ ] **Single Primary CTA Rule:** Main screen contains only 1 filled indigo button (`+ New Hobby`).
-- [ ] **Two Font Weights:** Only `Regular` (400) and `Bold` (700) rendered across all elements.
-- [ ] **Radius Hierarchy:** Cards & Modals (`12px`), Bookmark (`8px`), Controls (`6px`), Dot/Pills (`9999px`).
-- [ ] **Dot Matrix Responsiveness:** Logging a session turns today's dot `#6366F1` and updates weekly cadence counter immediately.
-- [ ] **Bookmark Synchronization:** Checking "Update bookmark" in Quick-Log reflects immediately on the card's bookmark frame.
-- [ ] **Persistence & Export:** F5 refresh maintains all state; JSON export produces valid downloadable file.
+- [x] **Single Primary CTA Rule:** Main screen contains strictly 1 filled indigo button (`+ New Hobby`).
+- [x] **Two Font Weights:** Only `Regular` (400) and `Bold` (700) rendered across all elements (enforced via `src/utils.test.ts`).
+- [x] **Radius Hierarchy:** Cards & Modals (`12px`), Bookmark & Note frames (`8px`), Controls (`6px`), Dot/Pills (`9999px`).
+- [x] **Hash Routing Integrity:** Clicking `#timeline` / `#dashboard` updates URL hash, tab highlight, and rendered view immediately.
+- [x] **Dot Matrix Responsiveness:** Logging a session turns today's dot `#6366F1` and updates weekly cadence counter immediately.
+- [x] **Bookmark Synchronization:** Checking "Update bookmark" in Quick-Log reflects immediately on the card's bookmark frame.
+- [x] **Persistence & Export:** F5 refresh maintains all state; JSON export produces valid downloadable file.

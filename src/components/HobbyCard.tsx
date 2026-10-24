@@ -86,7 +86,7 @@ export function HobbyCard({ hobby, windowDates, todayStr, onLogClick }: HobbyCar
                     role="tooltip"
                     className={`pointer-events-none absolute top-full ${tooltipAlignment} mt-2 w-max max-w-[200px] rounded-md bg-text-primary px-2.5 py-1.5 text-[11px] leading-snug text-white shadow-lg opacity-0 invisible transition-opacity group-hover/dot:opacity-100 group-hover/dot:visible group-focus-within/dot:opacity-100 group-focus-within/dot:visible`}
                   >
-                    <span className="block font-medium">{readableDate}</span>
+                    <span className="block font-bold">{readableDate}</span>
                     <span className="block break-words">{tooltipDetails}</span>
                   </span>
                 </div>

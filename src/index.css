@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --color-canvas: #FAFAFA;
+  --color-surface: #FFFFFF;
+  --color-border: #E8E8EC;
+  --color-text-primary: #0A0A0A;
+  --color-text-secondary: #6B6B6B;
+  --color-neutral: #9C9C9C;
+  --color-muted: #9C9C9C;
+  --color-primary: #6366F1;
+  --color-primary-hover: #4F46E5;
+  --color-brand-green: #20970B;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-error: #EF4444;
+
+  --font-display: "General Sans", sans-serif;
+  --font-sans: "DM Sans", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+@layer base {
+  body {
+    background-color: #FAFAFA;
+    color: #0A0A0A;
+    font-family: var(--font-sans, "DM Sans", sans-serif);
+    font-weight: 400;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display, "General Sans", sans-serif);
+    letter-spacing: -0.03em;
+    font-weight: 700;
+  }
+
+  input, textarea, select, button {
+    outline: none;
+  }
+
+  input:focus-visible, textarea:focus-visible, select:focus-visible {
+    outline: none;
+    border-color: #6366F1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+
+  button:focus-visible, a:focus-visible, [role="button"]:focus-visible, [role="checkbox"]:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    border-radius: inherit;
+  }
+}

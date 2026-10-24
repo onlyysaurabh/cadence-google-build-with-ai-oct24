@@ -11,13 +11,13 @@
 
 | Phase | Description | Status | Tasks Complete |
 | :--- | :--- | :---: | :---: |
-| **Phase 1** | Scaffolding, Tooling & Design Tokens | ⚪ Pending | 0 / 5 |
-| **Phase 2** | Types, Seed Data & Storage Engine | ⚪ Pending | 0 / 4 |
-| **Phase 3** | Core UI Shell & 28-Day Dot Matrix Cards | ⚪ Pending | 0 / 5 |
-| **Phase 4** | Interactive Modals & Command Palette | ⚪ Pending | 0 / 4 |
-| **Phase 5** | Design System Audit & Accessibility | ⚪ Pending | 0 / 4 |
+| **Phase 1** | Scaffolding, Tooling & Design Tokens | 🟢 Complete | 5 / 5 |
+| **Phase 2** | Types, Seed Data & Storage Engine | 🟢 Complete | 4 / 4 |
+| **Phase 3** | Core UI Shell & 28-Day Dot Matrix Cards | 🟢 Complete | 5 / 5 |
+| **Phase 4** | Interactive Modals & Command Palette | 🟢 Complete | 4 / 4 |
+| **Phase 5** | Design System Audit & Accessibility | 🟢 Complete | 4 / 4 |
 | **Phase 6** | Verification, Build & Deployment Prep | ⚪ Pending | 0 / 3 |
-| **Total** | | | **0 / 25** |
+| **Total** | | | **22 / 25** |
 
 ---
 
@@ -25,13 +25,13 @@
 
 **Goal:** Establish clean React + Vite + TypeScript workspace with Tailwind CSS configured with strict Genesis tokens and web typography.
 
-- [ ] **Task 1.1: Initialize Vite + React TypeScript Project**
+- [x] **Task 1.1: Initialize Vite + React TypeScript Project**
   - Initialize clean project in root: `npm create vite@latest . -- --template react-ts` (or standard scaffolding).
   - Clean out boilerplate files (`App.css`, sample SVGs, demo counters).
   - Verify `package.json` contains modern dependencies (`react`, `react-dom`, `typescript`, `@types/react`, `@types/react-dom`).
   - *Acceptance Criteria:* `npm run dev` serves a blank Vite canvas without console errors.
 
-- [ ] **Task 1.2: Install and Configure Tailwind CSS**
+- [x] **Task 1.2: Install and Configure Tailwind CSS**
   - Install Tailwind CSS and PostCSS (`tailwindcss`, `postcss`, `autoprefixer`).
   - Configure `tailwind.config.js` or Tailwind v4 `@theme` with Genesis design tokens:
     - Canvas: `#FAFAFA`
@@ -47,7 +47,7 @@
     - Semantic Error: `#EF4444`
   - *Acceptance Criteria:* Tailwind utilities compile and custom color tokens are accessible via utility classes.
 
-- [ ] **Task 1.3: Configure Typography (General Sans, DM Sans, JetBrains Mono)**
+- [x] **Task 1.3: Configure Typography (General Sans, DM Sans, JetBrains Mono)**
   - Add web font links in `index.html`:
     - `General Sans` (Fontshare CDN, weights 400 & 700)
     - `DM Sans` (Google Fonts, weights 400 & 700)
@@ -58,14 +58,14 @@
     - `font-mono`: `'JetBrains Mono', monospace`
   - *Acceptance Criteria:* Fonts load correctly in browser inspector; headings use `-0.03em` tracking.
 
-- [ ] **Task 1.4: Install Icons & Global Styles Setup**
+- [x] **Task 1.4: Install Icons & Global Styles Setup**
   - Install `lucide-react` for minimalist 1.5px stroke geometric icons.
   - Set up base styles in `src/index.css`:
     - Base canvas: `background-color: #FAFAFA; color: #0A0A0A;`
     - Reset default input/button outlines to match Genesis focus rings (`focus:ring-2 focus:ring-[#6366F1]/20`).
   - *Acceptance Criteria:* Lucide icons render crisply with custom stroke widths.
 
-- [ ] **Task 1.5: Verification of Dev Pipeline**
+- [x] **Task 1.5: Verification of Dev Pipeline**
   - Run `npm run build` to verify initial TypeScript & Vite build output.
   - *Acceptance Criteria:* Clean build with zero warnings or type errors.
 
@@ -75,7 +75,7 @@
 
 **Goal:** Create type definitions, seed dataset, 28-day sliding window calculations, and localStorage persistence adapter.
 
-- [ ] **Task 2.1: Define Data Types in `src/types.ts`**
+- [x] **Task 2.1: Define Data Types in `src/types.ts`**
   - Create [src/types.ts](file:///home/skylap/cybersec/buildwithai-24thOct/src/types.ts):
     - `Category`: `'Creative' | 'Tech' | 'Physical' | 'Learning'`
     - `SessionDuration`: `15 | 30 | 45 | 60`
@@ -89,7 +89,7 @@
     - Analog 35mm Photography (Creative, 2x/week)
   - *Acceptance Criteria:* Full TypeScript type safety across all properties.
 
-- [ ] **Task 2.2: Implement Local Storage & Export Engine in `src/utils.ts`**
+- [x] **Task 2.2: Implement Local Storage & Export Engine in `src/utils.ts`**
   - Create [src/utils.ts](file:///home/skylap/cybersec/buildwithai-24thOct/src/utils.ts) with Ponytail-aligned functions:
     - `formatLocalDate(d: Date): string` (timezone-safe YYYY-MM-DD helper)
     - `loadHobbies(seed: Hobby[]): Hobby[]` (safe fallback on corrupt JSON)
@@ -98,7 +98,7 @@
     - `importBackup(jsonString: string): Hobby[]` (validates and parses uploaded JSON)
   - *Acceptance Criteria:* Storage survives page reloads; JSON backup triggers valid browser download; import parses JSON securely.
 
-- [ ] **Task 2.3: Implement 28-Day Window & Metric Math in `src/utils.ts`**
+- [x] **Task 2.3: Implement 28-Day Window & Metric Math in `src/utils.ts`**
   - `get28DayWindow(): string[]` returns local calendar dates from `[Today - 27d]` to `[Today]`.
   - `getWeeklyLogCount(logs: SessionLog[]): number` calculates sessions completed in current ISO week (Mon–Sun) using local dates.
   - `getStatus(logs: SessionLog[]): { label: string; isGreen: boolean }`:
@@ -107,7 +107,7 @@
     - "Needs Attention — Xd inactive" (≥ 7 days or no logs)
   - *Acceptance Criteria:* Correct calculation confirmed across timezones and boundary conditions.
 
-- [ ] **Task 2.4: Unit / Smoke Testing of Utilities**
+- [x] **Task 2.4: Unit / Smoke Testing of Utilities**
   - Verify calculations with synthetic dates (leap days, week transitions, missing logs).
   - *Acceptance Criteria:* 100% calculation reliability with zero runtime errors.
 
@@ -117,7 +117,7 @@
 
 **Goal:** Build the main editorial gallery dashboard with sticky top navigation, category filter chips, and interactive 28-day dot matrix hobby cards.
 
-- [ ] **Task 3.1: Build Sticky Top Navigation Bar**
+- [x] **Task 3.1: Build Sticky Top Navigation Bar**
   - In [src/App.tsx](file:///home/skylap/cybersec/buildwithai-24thOct/src/App.tsx):
     - 56px height, `backdrop-blur-md bg-white/90 border-b border-[#E8E8EC] sticky top-0 z-40`.
     - Left: "Cadence" wordmark in `General Sans` Bold (`#0A0A0A`) with `#20970B` brand accent dot.
@@ -125,7 +125,7 @@
     - Right: "Export JSON" secondary action button + rounded-full avatar placeholder.
   - *Acceptance Criteria:* Nav sticks smoothly on scroll; ⌘K click triggers palette; export button invokes backup download.
 
-- [ ] **Task 3.2: Build Header Summary & Category Filters**
+- [x] **Task 3.2: Build Header Summary & Category Filters**
   - In [src/App.tsx](file:///home/skylap/cybersec/buildwithai-24thOct/src/App.tsx):
     - Section title: "Active Pursuits" (`32px` Bold `-0.03em`).
     - Dynamic subtitle: `"X of Y weekly sessions completed across Z hobbies"` in `DM Sans` Regular.
@@ -135,7 +135,7 @@
     - Right: **Single Primary CTA** `+ New Hobby` (`bg-[#6366F1] text-white rounded-md py-2 px-4 shadow-[0_4px_12px_rgba(99,102,241,0.35)] hover:bg-[#4F46E5] font-bold`).
   - *Acceptance Criteria:* Category filtering updates card grid immediately; single primary CTA rule strictly respected.
 
-- [ ] **Task 3.3: Implement 28-Day Dot Matrix Subcomponent**
+- [x] **Task 3.3: Implement 28-Day Dot Matrix Subcomponent**
   - In [src/components/HobbyCard.tsx](file:///home/skylap/cybersec/buildwithai-24thOct/src/components/HobbyCard.tsx):
     - 200px preview container with subtle `#FAFAFA` background.
     - 4 rows × 7 columns grid (28 days).
@@ -147,7 +147,7 @@
     - Bottom metric badge: `X / Y sessions this week` in `12px JetBrains Mono font-normal`.
   - *Acceptance Criteria:* Matrix maps 28 days accurately; hover highlights dot; week count matches logs.
 
-- [ ] **Task 3.4: Complete `HobbyCard.tsx` Layout & Bookmark Frame**
+- [x] **Task 3.4: Complete `HobbyCard.tsx` Layout & Bookmark Frame**
   - Surface: `#FFFFFF border border-[#E8E8EC] rounded-xl overflow-hidden`.
   - Top preview overlays:
     - Top-left: Category pill (`rounded-full bg-white/90 backdrop-blur border border-[#E8E8EC] px-2.5 py-0.5 text-xs font-normal`).
@@ -160,7 +160,7 @@
     - Card Footer: Full-width secondary button `+ Log Session` (`border border-[#E8E8EC] bg-transparent text-[#0A0A0A] hover:bg-[#FAFAFA] rounded-md py-2 text-sm font-normal`).
   - *Acceptance Criteria:* Elevation rule satisfied (flat at rest, -2px hover lift with shadow `0 8px 30px rgba(0,0,0,0.08)`); strictly respects Two-Weight Rule.
 
-- [ ] **Task 3.5: Dashboard Grid Integration in `App.tsx`**
+- [x] **Task 3.5: Dashboard Grid Integration in `App.tsx`**
   - Integrate responsive grid: 1 column on mobile, 2 columns on tablet, 3 columns on desktop (`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6`).
   - Add empty state when category filter has no results.
   - *Acceptance Criteria:* Cards resize cleanly; grid maintains 4px spacing alignment.
@@ -171,7 +171,7 @@
 
 **Goal:** Implement native, zero-bloat modal dialogs for quick session logging, pursuit creation, and ⌘K search palette.
 
-- [ ] **Task 4.1: Build Quick-Log Modal in `src/components/LogModal.tsx`**
+- [x] **Task 4.1: Build Quick-Log Modal in `src/components/LogModal.tsx`**
   - Native accessible dialog / backdrop (`fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center z-50 p-4`).
   - Container: `max-w-[480px] w-full bg-white rounded-xl border border-[#E8E8EC] p-6 shadow-2xl`.
   - Header: `"Log Session: {hobby.title}"` (`20px` Bold) + Close button.
@@ -185,7 +185,7 @@
   - Keyboard handlers: `Esc` closes modal, `Enter` (or `Ctrl+Enter`) submits.
   - *Acceptance Criteria:* Logging a session immediately updates 28-day dot matrix, weekly session count, and card bookmark.
 
-- [ ] **Task 4.2: Build New Pursuit Modal in `src/components/NewHobbyModal.tsx`**
+- [x] **Task 4.2: Build New Pursuit Modal in `src/components/NewHobbyModal.tsx`**
   - Modal container with 12px radius and clear field hierarchy.
   - Form fields:
     - Pursuit Title (`input text`, required).
@@ -196,7 +196,7 @@
   - Submission handler: Generates UUID/timestamp id, prepends new hobby to state, saves to `localStorage`.
   - *Acceptance Criteria:* New hobby appears immediately on the dashboard and is persisted.
 
-- [ ] **Task 4.3: Build Command Palette in `src/components/CommandPalette.tsx`**
+- [x] **Task 4.3: Build Command Palette in `src/components/CommandPalette.tsx`**
   - Triggered via `⌘K` (Mac) or `Ctrl+K` (Windows/Linux) or top nav click.
   - Centered floating search modal (`max-w-[540px] w-full bg-white rounded-xl border border-[#E8E8EC] shadow-2xl overflow-hidden`).
   - Search input: autofocus, icon prefix, `Esc` dismiss badge.
@@ -210,7 +210,7 @@
   - Keyboard navigation: `ArrowDown`, `ArrowUp`, `Enter` to select, `Esc` to dismiss.
   - *Acceptance Criteria:* ⌘K opens palette instantly; typing filters smoothly; selecting opens Quick-Log modal.
 
-- [ ] **Task 4.4: Add JSON Import / Data Sovereignty Support**
+- [x] **Task 4.4: Add JSON Import / Data Sovereignty Support**
   - Add hidden file input in `App.tsx` or settings dropdown for importing backup `.json` file.
   - Parse, validate structure against `Hobby[]` type, and merge or restore data with user confirmation.
   - *Acceptance Criteria:* Export produces valid JSON; importing restores all hobbies and logs without data loss.
@@ -221,13 +221,13 @@
 
 **Goal:** Rigorous enforcement of Genesis Editorial Precision design rules and smooth user interactions.
 
-- [ ] **Task 5.1: Two-Weight Rule Verification**
+- [x] **Task 5.1: Two-Weight Rule Verification**
   - Inspect DOM and Tailwind classes across all screens.
   - Ensure only `font-normal` (400) and `font-bold` (700) are used anywhere in the codebase.
   - Remove any intermediate weights (`font-medium`, `font-semibold`) in favor of 400 or 700.
   - *Acceptance Criteria:* Zero 500/600 font-weight classes rendered in production build.
 
-- [ ] **Task 5.2: Radius Hierarchy Audit**
+- [x] **Task 5.2: Radius Hierarchy Audit**
   - Verify strict adherence to radius hierarchy:
     - `12px` (`rounded-xl`): Hobby cards, Command Palette, Modals.
     - `8px` (`rounded-lg`): Recessed Bookmark Box ("Where I Left Off").
@@ -236,12 +236,12 @@
     - `9999px` (`rounded-full`): Category pills, status chips, matrix dots, user avatar.
   - *Acceptance Criteria:* 100% compliance with radius hierarchy tokens.
 
-- [ ] **Task 5.3: Single Primary CTA Rule Audit**
+- [x] **Task 5.3: Single Primary CTA Rule Audit**
   - Verify that the main dashboard contains strictly **one** filled `#6366F1` button (`+ New Hobby`).
   - Ensure card actions are bordered secondary buttons (`border-[#E8E8EC] bg-transparent text-[#0A0A0A]`).
   - *Acceptance Criteria:* Primary indigo background is reserved exclusively for the top CTA and active status indicators.
 
-- [ ] **Task 5.4: Keyboard Accessibility & Focus Trapping**
+- [x] **Task 5.4: Keyboard Accessibility & Focus Trapping**
   - Ensure `Esc` key properly closes active modals.
   - Ensure focus rings are clean and consistent (`ring-2 ring-[#6366F1]/20`).
   - Prevent body scrolling when a modal or command palette is open.
@@ -279,9 +279,9 @@
 
 ## Verification & Quality Sign-Off Checklist
 
-- [ ] Single Primary CTA Rule: Only 1 filled indigo button on the main dashboard (`+ New Hobby`).
-- [ ] Strict Two-Weight Rule: Only 400 and 700 weights rendered across typography.
-- [ ] Radius Hierarchy: 12px (cards/modals), 8px (bookmark), 6px (inputs/buttons), 4px (badges), 9999px (pills/dots).
-- [ ] Interactive 28-Day Matrix: 4 rows × 7 columns, hover tooltips, immediate color update upon logging.
-- [ ] Bookmark Synchronization: Updating bookmark in Quick-Log reflects immediately on card frame.
-- [ ] Data Sovereignty: LocalStorage persistence + JSON export/import fully operational.
+- [x] Single Primary CTA Rule: Only 1 filled indigo button on the main dashboard (`+ New Hobby`).
+- [x] Strict Two-Weight Rule: Only 400 and 700 weights rendered across typography.
+- [x] Radius Hierarchy: 12px (cards/modals), 8px (bookmark), 6px (inputs/buttons), 4px (badges), 9999px (pills/dots).
+- [x] Interactive 28-Day Matrix: 4 rows × 7 columns, hover tooltips, immediate color update upon logging.
+- [x] Bookmark Synchronization: Updating bookmark in Quick-Log reflects immediately on card frame.
+- [x] Data Sovereignty: LocalStorage persistence + JSON export/import fully operational.

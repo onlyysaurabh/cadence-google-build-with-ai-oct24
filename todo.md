@@ -81,23 +81,26 @@
     - `SessionDuration`: `15 | 30 | 45 | 60`
     - `SessionLog`: `{ id, date, durationMinutes, note, timestamp }`
     - `Hobby`: `{ id, title, category, weeklyTarget, nextStepBookmark, createdAt, logs }`
-  - Add initial seed hobbies (`INITIAL_HOBBIES`):
-    - Rust Systems Programming (Tech, 3x/week)
+  - Add initial seed hobbies (`INITIAL_HOBBIES`, 5 hobbies totaling 14 weekly sessions target):
+    - Systems Programming in Rust (Tech, 3x/week)
     - Acoustic Fingerpicking (Creative, 4x/week)
     - 5K Aerobic Base Building (Physical, 3x/week)
+    - Japanese Kanji & Grammar (Learning, 2x/week)
+    - Analog 35mm Photography (Creative, 2x/week)
   - *Acceptance Criteria:* Full TypeScript type safety across all properties.
 
 - [ ] **Task 2.2: Implement Local Storage & Export Engine in `src/utils.ts`**
   - Create [src/utils.ts](file:///home/skylap/cybersec/buildwithai-24thOct/src/utils.ts) with Ponytail-aligned functions:
+    - `formatLocalDate(d: Date): string` (timezone-safe YYYY-MM-DD helper)
     - `loadHobbies(seed: Hobby[]): Hobby[]` (safe fallback on corrupt JSON)
     - `saveHobbies(hobbies: Hobby[]): void` (`localStorage` under `cadence_hobbies_v1`)
     - `exportBackup(hobbies: Hobby[]): void` (generates downloadable timestamped JSON)
     - `importBackup(jsonString: string): Hobby[]` (validates and parses uploaded JSON)
-  - *Acceptance Criteria:* Storage survives page reloads; JSON backup triggers valid browser download.
+  - *Acceptance Criteria:* Storage survives page reloads; JSON backup triggers valid browser download; import parses JSON securely.
 
 - [ ] **Task 2.3: Implement 28-Day Window & Metric Math in `src/utils.ts`**
-  - `get28DayWindow(): string[]` returns ISO dates from `[Today - 27d]` to `[Today]`.
-  - `getWeeklyLogCount(logs: SessionLog[]): number` calculates sessions completed in current ISO week (Mon–Sun).
+  - `get28DayWindow(): string[]` returns local calendar dates from `[Today - 27d]` to `[Today]`.
+  - `getWeeklyLogCount(logs: SessionLog[]): number` calculates sessions completed in current ISO week (Mon–Sun) using local dates.
   - `getStatus(logs: SessionLog[]): { label: string; isGreen: boolean }`:
     - "On Track — Active Today" (if session logged today)
     - "On Track — Active Yesterday" / "On Track — Xd ago" (< 7 days)
@@ -126,10 +129,10 @@
   - In [src/App.tsx](file:///home/skylap/cybersec/buildwithai-24thOct/src/App.tsx):
     - Section title: "Active Pursuits" (`32px` Bold `-0.03em`).
     - Dynamic subtitle: `"X of Y weekly sessions completed across Z hobbies"` in `DM Sans` Regular.
-    - Category filter pills: `All Hobbies`, `Creative`, `Tech`, `Physical`, `Learning` (`rounded-full py-1.5 px-4 text-sm font-medium`).
-      - Active: `#6366F1` text-white.
-      - Inactive: `#F3F4F6` text-[#6B6B6B] hover:bg-[#E5E7EB].
-    - Right: **Single Primary CTA** `+ New Hobby` (`bg-[#6366F1] text-white rounded-md py-2 px-4 shadow-[0_4px_12px_rgba(99,102,241,0.35)] hover:bg-[#4F46E5]`).
+    - Category filter pills: `All Hobbies`, `Creative`, `Tech`, `Physical`, `Learning` (`rounded-full py-1.5 px-4 text-sm font-normal`).
+      - Active: `#6366F1` text-white font-bold.
+      - Inactive: `#F3F4F6` text-[#6B6B6B] hover:bg-[#E5E7EB] font-normal.
+    - Right: **Single Primary CTA** `+ New Hobby` (`bg-[#6366F1] text-white rounded-md py-2 px-4 shadow-[0_4px_12px_rgba(99,102,241,0.35)] hover:bg-[#4F46E5] font-bold`).
   - *Acceptance Criteria:* Category filtering updates card grid immediately; single primary CTA rule strictly respected.
 
 - [ ] **Task 3.3: Implement 28-Day Dot Matrix Subcomponent**
@@ -141,21 +144,21 @@
       - Inactive: `bg-[#E8E8EC] w-2.5 h-2.5 rounded-full`.
       - Today indicator: subtle ring or pulse styling.
     - Tooltips on hover: Native HTML `title` showing `"YYYY-MM-DD: X min (Note)"` or `"No session"`.
-    - Bottom metric badge: `X / Y sessions this week` in `12px JetBrains Mono`.
+    - Bottom metric badge: `X / Y sessions this week` in `12px JetBrains Mono font-normal`.
   - *Acceptance Criteria:* Matrix maps 28 days accurately; hover highlights dot; week count matches logs.
 
 - [ ] **Task 3.4: Complete `HobbyCard.tsx` Layout & Bookmark Frame**
   - Surface: `#FFFFFF border border-[#E8E8EC] rounded-xl overflow-hidden`.
   - Top preview overlays:
-    - Top-left: Category pill (`rounded-full bg-white/90 backdrop-blur border border-[#E8E8EC] px-2.5 py-0.5 text-xs font-medium`).
-    - Top-right: Status chip (`#10B981` On Track or `#F59E0B` Needs Attention, `rounded-full px-2.5 py-0.5 text-xs`).
+    - Top-left: Category pill (`rounded-full bg-white/90 backdrop-blur border border-[#E8E8EC] px-2.5 py-0.5 text-xs font-normal`).
+    - Top-right: Status chip (`#10B981` On Track or `#F59E0B` Needs Attention, `rounded-full px-2.5 py-0.5 text-xs font-normal`).
   - Content Body (`p-6`):
-    - Title (`22px` Bold) + Weekly target subtitle (`13px #6B6B6B`).
+    - Title (`22px` Bold) + Weekly target subtitle (`13px #6B6B6B font-normal`).
     - Recessed Bookmark Box: `bg-[#FAFAFA] border border-[#E8E8EC] rounded-lg p-3`.
-      - Overline: `NEXT STEP BOOKMARK` (`10px JetBrains Mono text-[#9C9C9C] tracking-wider uppercase`).
-      - Bookmark text: Current next step note (`13px text-[#0A0A0A] line-clamp-2`).
-    - Card Footer: Full-width secondary button `+ Log Session` (`border border-[#E8E8EC] bg-transparent text-[#0A0A0A] hover:bg-[#FAFAFA] rounded-md py-2 text-sm font-medium`).
-  - *Acceptance Criteria:* Elevation rule satisfied (flat at rest, -2px hover lift with shadow `0 8px 30px rgba(0,0,0,0.08)`).
+      - Overline: `NEXT STEP BOOKMARK` (`10px JetBrains Mono text-[#9C9C9C] tracking-wider uppercase font-normal`).
+      - Bookmark text: Current next step note (`13px text-[#0A0A0A] line-clamp-2 font-normal`).
+    - Card Footer: Full-width secondary button `+ Log Session` (`border border-[#E8E8EC] bg-transparent text-[#0A0A0A] hover:bg-[#FAFAFA] rounded-md py-2 text-sm font-normal`).
+  - *Acceptance Criteria:* Elevation rule satisfied (flat at rest, -2px hover lift with shadow `0 8px 30px rgba(0,0,0,0.08)`); strictly respects Two-Weight Rule.
 
 - [ ] **Task 3.5: Dashboard Grid Integration in `App.tsx`**
   - Integrate responsive grid: 1 column on mobile, 2 columns on tablet, 3 columns on desktop (`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6`).

@@ -88,31 +88,19 @@ Semantic Error (#EF4444) ── Validation errors / delete actions
 ```
 
 ### 4.2 Typography & Two-Weight Rule
-Maximum **two font weights** (`Regular` 400 and `Bold` 700) across the entire screen:
-- **Headings & Card Titles:** `General Sans` Bold (`-0.03em` tracking).
-- **Body & Labels:** `DM Sans` Regular / Medium.
-- **Metrics, Counters & Overlines:** `JetBrains Mono` Regular.
-
-### 4.3 Radius Hierarchy
-- **`12px` (`rounded-xl`):** Hobby cards, ⌘K search bar, modals.
-- **`8px` (`rounded-lg`):** Recessed metadata box ("Where I Left Off").
-- **`6px` (`rounded-md`):** Buttons, inputs, textareas.
-- **`4px` (`rounded`):** Monospace badges (`⌘K`, `Esc`).
-- **`9999px` (`rounded-full`):** Category pills, status chips, matrix dots, user avatar.
-
-### 4.4 Elevation & Single Primary CTA Rule
-- **Cards at Rest:** Completely flat (`box-shadow: none`), `1px` `#E8E8EC` border.
-- **Cards Hover:** `-2px` vertical lift, `box-shadow: 0 8px 30px rgba(0,0,0,0.08)`, 200ms ease.
-- **Single Primary CTA:** Only **one** filled `#6366F1` button on the main dashboard (`+ New Hobby`). Cards use bordered secondary buttons (`bg-transparent border-[#E8E8EC] text-[#0A0A0A]`).
+Maximum **two font weights** (`Regular` 400 and `Bold` 700) across the entire application:
+- **Headings & Card Titles:** `General Sans` Bold (700) (`-0.03em` tracking).
+- **Body & Labels:** `DM Sans` Regular (400).
+- **Metrics, Counters & Overlines:** `JetBrains Mono` Regular (400).
 
 ---
 
-## 5. Lean Component Architecture (6 Files Total)
+## 5. Lean File Architecture (9 Files Total)
 
 ```
 src/
 ├── types.ts              # Data interfaces (Hobby, SessionLog, Category) + Seed Data
-├── utils.ts              # 28-day matrix math, weekly targets, relative status, storage/export
+├── utils.ts              # 28-day matrix math, weekly targets, relative status, storage/export/import
 ├── App.tsx               # App shell: TopNav, HeaderSummary, 3-column Grid, ⌘K listener
 ├── components/
 │   ├── HobbyCard.tsx     # 200px dot matrix preview + bookmark + secondary log button
@@ -133,7 +121,7 @@ export type SessionDuration = 15 | 30 | 45 | 60;
 
 export interface SessionLog {
   id: string;
-  date: string; // "YYYY-MM-DD"
+  date: string; // "YYYY-MM-DD" (local date)
   durationMinutes: SessionDuration;
   note: string;
   timestamp: number;
@@ -171,8 +159,9 @@ export const INITIAL_HOBBIES: Hobby[] = [
     nextStepBookmark: 'Practice Bm to F barre transitions at 95 BPM',
     createdAt: '2026-09-10',
     logs: [
-      { id: 'log-g1', date: '2026-10-22', durationMinutes: 30, note: 'Alternating thumb bass with melody sync', timestamp: 1729573200000 },
-      { id: 'log-g2', date: '2026-10-19', durationMinutes: 30, note: 'Dust in the Wind fingerstyle pattern intro', timestamp: 1729314000000 }
+      { id: 'log-g1', date: '2026-10-24', durationMinutes: 30, note: 'Clean barre execution at 98 BPM', timestamp: 1729746000000 },
+      { id: 'log-g2', date: '2026-10-22', durationMinutes: 30, note: 'Alternating thumb bass with melody sync', timestamp: 1729573200000 },
+      { id: 'log-g3', date: '2026-10-19', durationMinutes: 30, note: 'Dust in the Wind fingerstyle pattern intro', timestamp: 1729314000000 }
     ]
   },
   {
@@ -184,6 +173,31 @@ export const INITIAL_HOBBIES: Hobby[] = [
     createdAt: '2026-08-15',
     logs: [
       { id: 'log-run1', date: '2026-10-16', durationMinutes: 30, note: 'Slow recovery 3.2km run around park', timestamp: 1729054800000 }
+    ]
+  },
+  {
+    id: 'hobby-japanese',
+    title: 'Japanese Kanji & Grammar',
+    category: 'Learning',
+    weeklyTarget: 2,
+    nextStepBookmark: 'Review Wanikani Level 14 vocabulary & Genki II Ch 18',
+    createdAt: '2026-09-15',
+    logs: [
+      { id: 'log-j1', date: '2026-10-23', durationMinutes: 45, note: 'Wanikani 40 reviews + JLPT N4 grammar test', timestamp: 1729659600000 },
+      { id: 'log-j2', date: '2026-10-21', durationMinutes: 30, note: 'Genki chapter 18 conditional forms', timestamp: 1729486800000 }
+    ]
+  },
+  {
+    id: 'hobby-photo',
+    title: 'Analog 35mm Photography',
+    category: 'Creative',
+    weeklyTarget: 2,
+    nextStepBookmark: 'Develop Kodak Tri-X 400 roll in D-76 (1:1 dilution)',
+    createdAt: '2026-08-20',
+    logs: [
+      { id: 'log-p1', date: '2026-10-24', durationMinutes: 45, note: 'Street photography session at morning market', timestamp: 1729746000000 },
+      { id: 'log-p2', date: '2026-10-21', durationMinutes: 30, note: 'Archival negative sleeve labeling', timestamp: 1729486800000 },
+      { id: 'log-p3', date: '2026-10-20', durationMinutes: 60, note: 'Darkroom chemical preparation and test strips', timestamp: 1729400400000 }
     ]
   }
 ];
@@ -198,6 +212,11 @@ export const INITIAL_HOBBIES: Hobby[] = [
 import { Hobby, SessionLog } from './types';
 
 const STORAGE_KEY = 'cadence_hobbies_v1';
+
+export function formatLocalDate(d: Date): string {
+  const pad = (n: number) => n.toString().padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
 
 export function loadHobbies(seed: Hobby[]): Hobby[] {
   try {
@@ -217,9 +236,20 @@ export function exportBackup(hobbies: Hobby[]): void {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `cadence-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.download = `cadence-backup-${formatLocalDate(new Date())}.json`;
   a.click();
   URL.revokeObjectURL(url);
+}
+
+export function importBackup(jsonString: string): Hobby[] {
+  const data = JSON.parse(jsonString);
+  if (!Array.isArray(data)) throw new Error('Backup must be an array of hobbies');
+  for (const h of data) {
+    if (!h.id || !h.title || !h.category || typeof h.weeklyTarget !== 'number' || !Array.isArray(h.logs)) {
+      throw new Error('Invalid hobby data format');
+    }
+  }
+  return data as Hobby[];
 }
 
 // 28-day window: [Today - 27d, ..., Today]
@@ -227,9 +257,8 @@ export function get28DayWindow(): string[] {
   const dates: string[] = [];
   const now = new Date();
   for (let i = 27; i >= 0; i--) {
-    const d = new Date(now);
-    d.setDate(d.getDate() - i);
-    dates.push(d.toISOString().split('T')[0]);
+    const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() - i);
+    dates.push(formatLocalDate(d));
   }
   return dates;
 }
@@ -237,10 +266,8 @@ export function get28DayWindow(): string[] {
 export function getWeeklyLogCount(logs: SessionLog[]): number {
   const now = new Date();
   const day = now.getDay() || 7; // ISO week (Mon=1 ... Sun=7)
-  const monday = new Date(now);
-  monday.setDate(now.getDate() - day + 1);
-  monday.setHours(0, 0, 0, 0);
-  const mondayStr = monday.toISOString().split('T')[0];
+  const monday = new Date(now.getFullYear(), now.getMonth(), now.getDate() - day + 1);
+  const mondayStr = formatLocalDate(monday);
   return logs.filter(l => l.date >= mondayStr).length;
 }
 
@@ -248,10 +275,15 @@ export function getStatus(logs: SessionLog[]): { label: string; isGreen: boolean
   if (logs.length === 0) return { label: 'Needs Attention — inactive', isGreen: false };
   const sorted = [...logs].sort((a, b) => b.date.localeCompare(a.date));
   const lastDate = sorted[0].date;
-  const today = new Date().toISOString().split('T')[0];
-  if (lastDate === today) return { label: 'On Track — Active Today', isGreen: true };
+  const todayStr = formatLocalDate(new Date());
+  if (lastDate === todayStr) return { label: 'On Track — Active Today', isGreen: true };
   
-  const diffDays = Math.round((new Date(today).getTime() - new Date(lastDate).getTime()) / (1000 * 60 * 60 * 24));
+  const [ly, lm, ld] = lastDate.split('-').map(Number);
+  const [ty, tm, td] = todayStr.split('-').map(Number);
+  const lastTime = new Date(ly, lm - 1, ld).getTime();
+  const todayTime = new Date(ty, tm - 1, td).getTime();
+  const diffDays = Math.round((todayTime - lastTime) / (1000 * 60 * 60 * 24));
+
   if (diffDays === 1) return { label: 'On Track — Active Yesterday', isGreen: true };
   if (diffDays < 7) return { label: `On Track — ${diffDays}d ago`, isGreen: true };
   return { label: `Needs Attention — ${diffDays}d inactive`, isGreen: false };

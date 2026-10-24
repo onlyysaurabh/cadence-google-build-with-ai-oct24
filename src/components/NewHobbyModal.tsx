@@ -6,16 +6,17 @@ import { X } from 'lucide-react';
 interface NewHobbyModalProps {
   onClose: () => void;
   onCreate: (hobby: Hobby) => void;
+  defaultWeeklyTarget?: number;
 }
 
 const CATEGORIES: Category[] = ['Creative', 'Tech', 'Physical', 'Learning'];
 const TARGETS = [1, 2, 3, 4, 5, 6, 7];
 
 // ponytail: native form validation with inline state; no form-library bloat.
-export function NewHobbyModal({ onClose, onCreate }: NewHobbyModalProps) {
+export function NewHobbyModal({ onClose, onCreate, defaultWeeklyTarget = 3 }: NewHobbyModalProps) {
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState<Category>('Creative');
-  const [weeklyTarget, setWeeklyTarget] = useState(3);
+  const [weeklyTarget, setWeeklyTarget] = useState(defaultWeeklyTarget);
   const [bookmark, setBookmark] = useState('');
   const [error, setError] = useState('');
   const titleInputRef = useRef<HTMLInputElement>(null);

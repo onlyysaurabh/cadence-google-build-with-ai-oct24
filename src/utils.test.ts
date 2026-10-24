@@ -146,7 +146,83 @@ assert.equal(formatTimelineDate('2026-10-24', '2026-10-24'), 'Today');
 assert.equal(formatTimelineDate('2026-10-23', '2026-10-24'), 'Yesterday');
 assert.equal(formatTimelineDate('2026-10-22', '2026-10-24'), 'Thu, Oct 22, 2026');
 
-// 10. Phase 5 Genesis Design System & Two-Weight Rule Verification
+// 10. Phase 6 Authentication & Sovereign Identity Tests
+import {
+  initAuth,
+  signUp,
+  signIn,
+  signOut,
+  signInDemo,
+  updateProfile,
+  deleteAccount,
+  getScopedStorageKey,
+  getInitials,
+  getCurrentUser,
+  DEMO_USER,
+} from './auth.ts';
+
+// Init auth and test demo account
+await initAuth();
+const currentDemo = getCurrentUser();
+assert.ok(currentDemo);
+assert.equal(currentDemo.id, DEMO_USER.id);
+assert.equal(getInitials('Alex Kim'), 'AK');
+assert.equal(getInitials('Sarah'), 'SA');
+assert.equal(getInitials('John Michael Doe'), 'JD');
+
+// Scoped storage key isolation
+assert.equal(getScopedStorageKey('user-123'), 'cadence_hobbies_user_user-123');
+assert.equal(getScopedStorageKey(DEMO_USER.id), 'cadence_hobbies_user_usr-alex-kim');
+
+// Sign up new user
+const newUser = await signUp('Taylor Reed', 'taylor@example.com', 'secret123');
+assert.equal(newUser.name, 'Taylor Reed');
+assert.equal(newUser.email, 'taylor@example.com');
+assert.equal(newUser.preferences.defaultWeeklyTarget, 3);
+assert.equal(getCurrentUser()?.id, newUser.id);
+
+// Duplicate sign up throws error
+await assert.rejects(
+  () => signUp('Duplicate Taylor', 'taylor@example.com', 'password999'),
+  /already exists/
+);
+
+// Sign out
+signOut();
+assert.equal(getCurrentUser(), null);
+
+// Sign in with invalid password throws error
+await assert.rejects(
+  () => signIn('taylor@example.com', 'wrongpassword'),
+  /Incorrect password/
+);
+
+// Sign in with valid credentials
+const loggedInUser = await signIn('taylor@example.com', 'secret123');
+assert.equal(loggedInUser.id, newUser.id);
+assert.equal(getCurrentUser()?.id, newUser.id);
+
+// Profile updates
+const updated = updateProfile({
+  name: 'Taylor R.',
+  avatarColor: '#059669',
+  preferences: { defaultWeeklyTarget: 5, weekStartsOnMonday: false },
+});
+assert.equal(updated.name, 'Taylor R.');
+assert.equal(updated.avatarColor, '#059669');
+assert.equal(updated.preferences.defaultWeeklyTarget, 5);
+assert.equal(updated.preferences.weekStartsOnMonday, false);
+assert.equal(getCurrentUser()?.name, 'Taylor R.');
+
+// Account deletion
+deleteAccount(newUser.id);
+assert.notEqual(getCurrentUser()?.id, newUser.id);
+
+// Sign back in as Demo user
+const demoAgain = await signInDemo();
+assert.equal(demoAgain.id, DEMO_USER.id);
+
+// 11. Phase 5 & 6 Genesis Design System & Two-Weight Rule Verification
 import fs from 'node:fs';
 
 const UI_FILES = [
@@ -156,6 +232,10 @@ const UI_FILES = [
   'src/components/LogModal.tsx',
   'src/components/NewHobbyModal.tsx',
   'src/components/CommandPalette.tsx',
+  'src/components/AccountView.tsx',
+  'src/components/AuthModal.tsx',
+  'src/components/UserMenu.tsx',
+  'src/components/LandingView.tsx',
 ];
 
 for (const filePath of UI_FILES) {

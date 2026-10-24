@@ -8,19 +8,19 @@ export function formatLocalDate(d: Date): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 }
 
-export function loadHobbies(seed: Hobby[]): Hobby[] {
+export function loadHobbies(seed: Hobby[], storageKey: string = STORAGE_KEY): Hobby[] {
   try {
-    const raw = typeof window !== 'undefined' ? localStorage.getItem(STORAGE_KEY) : null;
+    const raw = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
     return raw ? JSON.parse(raw) : seed;
   } catch {
     return seed;
   }
 }
 
-export function saveHobbies(hobbies: Hobby[]): void {
+export function saveHobbies(hobbies: Hobby[], storageKey: string = STORAGE_KEY): void {
   try {
     if (typeof window !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(hobbies));
+      localStorage.setItem(storageKey, JSON.stringify(hobbies));
     }
   } catch {
     // Quota exceeded or private browsing

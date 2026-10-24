@@ -18,7 +18,8 @@
 | **Phase 5** | Design System Audit & Accessibility | 🟢 Complete | 4 / 4 |
 | **Phase 6** | Practice Timeline & Hash Router Navigation | 🟢 Complete | 3 / 3 |
 | **Phase 7** | Verification, Build & Deployment Prep | 🟢 Complete | 3 / 3 |
-| **Total** | | | **28 / 28** |
+| **Phase 8** | Editorial Landing Page & Interactive Sandbox | 🟢 Complete | 4 / 4 |
+| **Total** | | | **32 / 32** |
 
 ---
 

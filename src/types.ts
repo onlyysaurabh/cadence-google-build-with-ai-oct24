@@ -1,5 +1,25 @@
 export type Category = 'Creative' | 'Tech' | 'Physical' | 'Learning';
 export type SessionDuration = 15 | 30 | 45 | 60;
+export type ViewMode = 'landing' | 'dashboard' | 'timeline' | 'account';
+
+export interface UserPreferences {
+  defaultWeeklyTarget: number;
+  weekStartsOnMonday: boolean;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  avatarColor?: string;
+  createdAt: string;
+  preferences: UserPreferences;
+}
+
+export interface AuthSession {
+  user: User;
+  token: string;
+}
 
 export interface SessionLog {
   id: string;

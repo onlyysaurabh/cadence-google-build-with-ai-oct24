@@ -6,7 +6,15 @@ Cadence is an editorial-grade, multi-hobby progress tracker engineered to transl
 
 ## Key Features
 
-### 1. Active Pursuits Dashboard (`/#dashboard`)
+### 1. Editorial Genesis Landing Page (`/#landing`)
+- **Deliberate Practice Narrative**: Articulates Anders Ericsson's deliberate practice framework versus shallow, guilt-driven streak counters.
+- **Interactive Live Showcase**: Live 28-day habit matrix with hover inspector tooltips, interactive micro-logger, and dynamic target indicators.
+- **Interactive Practice Sandbox ("Test Drive")**: In-browser simulator to test duration chips (`15m`, `30m`, `45m`, `60m`), custom session notes, next step bookmarks, and 1-click handoff into the active dashboard.
+- **Four Genesis Pillars**: Deep-dives into the 28-day momentum matrix, context-preserving bookmarks, practice timeline, and local-first data sovereignty.
+- **Polymath Case Studies**: Real-world schedules for Systems Architects (Rust), Multi-Instrumentalists (Guitar/Jazz), Hybrid Athletes (5K Aerobic), and Polyglots (Kanji).
+- **Subtle Editorial Footer**: Direct hash navigation across `#landing`, `#dashboard`, `#timeline`, `#account`, plus global `⌘K` palette discovery.
+
+### 2. Active Pursuits Dashboard (`/#dashboard`)
 - **Interactive 28-Day Matrix**: Visualizes a 4-week practice habit grid directly within the 200px preview header of each hobby card.
 - **Weekly Target Tracking**: Real-time ISO week completion progress indicators.
 - **Recessed Next Step Bookmark**: "Where I Left Off" context bookmark so you can resume deliberate practice instantly.

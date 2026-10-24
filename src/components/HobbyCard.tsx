@@ -47,24 +47,33 @@ export function HobbyCard({ hobby, windowDates, todayStr, onLogClick }: HobbyCar
             <span>4w trail</span>
           </div>
           <div className="grid grid-cols-7 gap-2.5 justify-items-center">
-            {windowDates.map((date) => {
+            {windowDates.map((date, index) => {
               const log = logMap.get(date);
               const isToday = date === todayStr;
               const hasLog = Boolean(log);
+              const readableDate = new Intl.DateTimeFormat(undefined, {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+              }).format(new Date(`${date}T00:00:00`));
 
-              const tooltipTitle = hasLog
-                ? `${date} • ${log?.durationMinutes}m${log?.note ? ` (${log.note})` : ''}`
+              const tooltipDetails = hasLog
+                ? `${log?.durationMinutes}m${log?.note ? ` • ${log.note}` : ''}`
                 : isToday
-                  ? `${date} • Today (Pending)`
-                  : `${date} • Rest`;
+                  ? 'Today (Pending)'
+                  : 'Rest';
+              const tooltipAlignment = index % 7 === 0
+                ? 'left-0'
+                : index % 7 === 6
+                  ? 'right-0'
+                  : 'left-1/2 -translate-x-1/2';
 
               return (
-                <div key={date} className="relative group/dot flex items-center justify-center p-0.5">
+                <div key={date} className="relative group/dot z-0 hover:z-20 focus-within:z-20 flex items-center justify-center p-0.5">
                   <button
                     type="button"
                     tabIndex={0}
-                    aria-label={tooltipTitle}
-                    title={tooltipTitle}
+                    aria-label={`${readableDate} • ${tooltipDetails}`}
                     className={`block w-3 h-3 rounded-full cursor-pointer transition-transform duration-150 hover:scale-125 border-0 p-0 ${
                       hasLog ? 'bg-primary' : 'bg-border'
                     } ${
@@ -73,6 +82,13 @@ export function HobbyCard({ hobby, windowDates, todayStr, onLogClick }: HobbyCar
                         : ''
                     }`}
                   />
+                  <span
+                    role="tooltip"
+                    className={`pointer-events-none absolute top-full ${tooltipAlignment} mt-2 w-max max-w-[200px] rounded-md bg-text-primary px-2.5 py-1.5 text-[11px] leading-snug text-white shadow-lg opacity-0 invisible transition-opacity group-hover/dot:opacity-100 group-hover/dot:visible group-focus-within/dot:opacity-100 group-focus-within/dot:visible`}
+                  >
+                    <span className="block font-medium">{readableDate}</span>
+                    <span className="block break-words">{tooltipDetails}</span>
+                  </span>
                 </div>
               );
             })}
@@ -124,7 +140,7 @@ export function HobbyCard({ hobby, windowDates, todayStr, onLogClick }: HobbyCar
             className="w-full h-[38px] rounded-md border border-border bg-transparent text-text-primary hover:bg-[#F8F8FA] hover:border-[#D3D3DB] transition-all duration-200 hover:-translate-y-px text-[13px] font-normal flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <Plus size={14} strokeWidth={1.5} className="text-text-secondary" />
-            <span>+ Log Session</span>
+            <span>Log Session</span>
           </button>
         </div>
       </div>
